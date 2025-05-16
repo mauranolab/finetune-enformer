@@ -87,24 +87,40 @@ def main(model:str, dataset:str, seed:int, batch:int, length:int,
 if __name__ == "__main__":
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="predict")
-    parser.add_argument('model', type=str)
-    parser.add_argument('dataset', type=str)
-    parser.add_argument('--seed', type=int, default=5)
-    parser.add_argument('--batch', type=int, default=4)
-    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH', 25600))
+    parser = argparse.ArgumentParser(
+        prog="predict",
+        description=(
+            "Predicts {model} activity (from finetuning head) and maximum signal " +
+            "at annotated sites for each {dataset} entry. " +
+            "Predictions of each entry are conducted on a random sample of all " +
+            "possible sequence strides."
+        ))
+    parser.add_argument('model', type=str,
+        help="path to load finetuned model. Indicating `original` will load weights from $ENFORMERBASELINE and `tensorhub` will load weights from ENFORMERTENSORHUB.")
+    parser.add_argument('dataset', type=str, help="path to dataset table.")
+    parser.add_argument('--seed', type=int, default=5, help="random number generator seed")
+    parser.add_argument('--batch', type=int, default=4,
+        help="number of samples to be evaluated simultaneously. Note this has large implications to the memory requirements.")
+    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH', 25600),
+        help="input/output sequence length in bp.")
+    
     ## model parameters
     modeldef = parser.add_argument_group('model definition')
-    modeldef.add_argument('--key-size', type=int, default=64)
-    modeldef.add_argument('--value-size', type=int, default=64)
-    modeldef.add_argument('--num-heads', type=int, default=1)
+    modeldef.add_argument('--key-size', type=int, default=64, help='finetuning attention layer key size')
+    modeldef.add_argument('--value-size', type=int, default=64, help='finetuning attention layer value size')
+    modeldef.add_argument('--num-heads', type=int, default=1, help='number of independent finetuning attention heads')
+
     ## output parameters
     outputdef = parser.add_argument_group('output definition')
-    outputdef.add_argument('--head', type=str, choices=['mouse', 'human'], default='mouse')
-    outputdef.add_argument('--track', type=int, default=10)
-    outputdef.add_argument('--stride', type=int, default=16)
-    outputdef.add_argument('--sample', type=float, default=0.4)
-    outputdef.add_argument('--output', type=str, default="-")
+    outputdef.add_argument('--head', type=str, choices=['mouse', 'human'], default='mouse',
+        help="Enformer output head (either mouse or human) to evaluate annotated sites signal.")
+    outputdef.add_argument('--track', type=int, default=10,
+        help="index of Enformer output track of interest to evaluate annotated sites signal.")
+    outputdef.add_argument('--stride', type=int, default=1, help="step size used to generate sequence sample pool.")
+    outputdef.add_argument('--sample', type=float, default=0.4,
+        help="ratio or number of samples to extract from each dataset entry.")
+    outputdef.add_argument('--output', type=str, default="-",
+        help="resulting table output path. Print to stdout if `-`.")
 
     args = parser.parse_args()
     print(args)

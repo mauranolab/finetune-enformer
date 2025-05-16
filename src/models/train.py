@@ -126,24 +126,30 @@ def main(model: str, dataset: str, seed: int,
 if __name__ == "__main__":
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="predict")
-    parser.add_argument('model', type=str)
-    parser.add_argument('dataset', type=str)
-    parser.add_argument('--seed', type=int, default=5)
+    parser = argparse.ArgumentParser(
+        prog="src.models.train",
+        description=(
+            "Trains a finetuned Enformer model based on " +
+            "{dataset}-sequence.{fold}.npy and {dataset}-activity.{fold}.npy " +
+            "arrays."
+        ))
+    parser.add_argument('model', type=str, help="path to save or restore a finetuned model")
+    parser.add_argument('dataset', type=str, help="training/validation dataset path prefix")
+    parser.add_argument('--seed', type=int, default=5, help="random number generator seed")
     ## model parameters
     traindef = parser.add_argument_group('training options')
-    traindef.add_argument('--baseline', type=str)
-    traindef.add_argument('--kfold', type=int, default=-1)
-    traindef.add_argument('--num_kfolds', type=int, default=-1)
-    traindef.add_argument('--learning-rate', type=float, default=1E-5)
-    traindef.add_argument('--epochs', type=int, default=10)
-    traindef.add_argument("--steps", type=int, default=100)
-    traindef.add_argument("--batch", type=int, default=4)
+    traindef.add_argument('--baseline', type=str, help="Path to Enformer weights to use as baseline. Defaults to $ENFORMERBASELINE if not set")
+    traindef.add_argument('--kfold', type=int, default=-1, help="fold to be used as validation in a kfold divided dataset.")
+    traindef.add_argument('--num_kfolds', type=int, default=-1, help="total number of kfolds the dataset was divided into.")
+    traindef.add_argument('--learning-rate', type=float, default=1E-5, help="finetuning training learning rate")
+    traindef.add_argument('--epochs', type=int, default=10, help="number of training epochs to be conducted.")
+    traindef.add_argument("--steps", type=int, default=100, help="number of trainins steps conducted per epoch.")
+    traindef.add_argument("--batch", type=int, default=4, help="number of samples to be evaluated simultaneously per step. Note this has large implications to the memory requirements.")
     ## model parameters
     modeldef = parser.add_argument_group('model definition')
-    modeldef.add_argument('--key-size', type=int, default=64)
-    modeldef.add_argument('--value-size', type=int, default=64)
-    modeldef.add_argument('--num-heads', type=int, default=1)
+    modeldef.add_argument('--key-size', type=int, default=64, help='finetuning attention layer key size')
+    modeldef.add_argument('--value-size', type=int, default=64, help='finetuning attention layer value size')
+    modeldef.add_argument('--num-heads', type=int, default=1, help='number of independent finetuning attention heads')
 
     args = parser.parse_args()
     print(args)

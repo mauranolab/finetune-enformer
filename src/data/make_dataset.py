@@ -141,19 +141,33 @@ if __name__ == "__main__":
 
     default_length = int(os.getenv("SEQ_LENGTH", 25600)) + 1280
 
-    parser = argparse.ArgumentParser(prog="make-dataset")
-    parser.add_argument('dataset', type=str)
-    parser.add_argument('sequences', type=str)
-    parser.add_argument('--annotation', type=str)
-    parser.add_argument('--reference', type=str)
-    parser.add_argument("--context", type=str)
-    parser.add_argument('--length', type=int, default=default_length)
-    parser.add_argument('--seed', type=int, default=5)
+    parser = argparse.ArgumentParser(
+        prog="src.data.make_dataset",
+        help=(
+            "Builds a dataset reference table from payloads sequences and " +
+            "their activity/foldchange signal. " +
+            "Generates a synthetic sequence for each payload by replacing an " +
+            "endogenous locus with the payload sequence."
+        ))
+    parser.add_argument('dataset', type=str, help="path to a payload activity table.")
+    parser.add_argument('sequences', type=str, help="path to payloads fasta.")
+    parser.add_argument('--annotation', type=str, help="BED file of relevant payload sites to annotate.")
+    parser.add_argument('--reference', type=str, help="path to reference genome fasta where the payloads will be inserted.")
+    parser.add_argument("--context", type=str, help="genomic coordinates that the payload will replace.")
+    parser.add_argument('--length', type=int, default=default_length,
+        help=(
+            "length of the synthetic sequence generated. Sequences will be generated centered at the {context} site. " +
+            "We recommend include some padding to your target sequence size to allow random sample generation."
+        ))
+    parser.add_argument('--seed', type=int, default=5, help="random number generator seed")
     ## output parameters
     outputdef = parser.add_argument_group('output definition')
-    outputdef.add_argument('--folds', nargs='+', action=KwargsParser,
-                           default=dict(train=8, test=1, validation=1))
-    outputdef.add_argument('--output', type=str, default="dataset.tsv")
+    outputdef.add_argument(
+        '--folds', nargs='+', action=KwargsParser,
+        default=dict(train=8, test=1, validation=1),
+        help="payload fold assignment ratios (e.g. train=8 test=1 validation=1).")
+    outputdef.add_argument('--output', type=str, default="dataset.tsv",
+        help="path to output file.")
     args = parser.parse_args()
 
     print(args, file=sys.stderr)
