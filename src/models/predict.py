@@ -92,7 +92,7 @@ if __name__ == "__main__":
     parser.add_argument('dataset', type=str)
     parser.add_argument('--seed', type=int, default=5)
     parser.add_argument('--batch', type=int, default=4)
-    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH'))
+    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH', 25600))
     ## model parameters
     modeldef = parser.add_argument_group('model definition')
     modeldef.add_argument('--key-size', type=int, default=64)

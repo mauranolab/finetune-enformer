@@ -52,7 +52,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="make-dataset")
     parser.add_argument('dataset', type=str)
     parser.add_argument('--prefix', type=str, default="dataset")
-    parser.add_argument('--length', type=int, default=int(os.getenv("SEQ_LENGTH")))
+    parser.add_argument('--length', type=int, default=int(os.getenv("SEQ_LENGTH", 25600)))
     parser.add_argument('--stride', type=int, default=1)
     parser.add_argument('--sample', type=float, default=0.4)
     parser.add_argument('--seed', type=int, default=5)

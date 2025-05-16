@@ -87,7 +87,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("array_to_bed")
     parser.add_argument('--prefix', type=str, default="track")
     parser.add_argument('--tracks', type=int, nargs='+', default=[10])
-    parser.add_argument('--step', type=int, default=os.getenv("SEQ_WINDOW"))
+    parser.add_argument('--step', type=int, default=os.getenv("SEQ_WINDOW", 128))
     parser.add_argument('bedfile')
     parser.add_argument('array')
 

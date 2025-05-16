@@ -9,7 +9,6 @@ import numpy as np
 from src.utils import pad_or_crop
 from dotenv import load_dotenv
 
-
 def main(
         array: str, bedfile: str, prefix: str, tracks: List[int],
         step:int, length:int) -> int:
@@ -53,8 +52,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("array_to_bed")
     parser.add_argument('--prefix', type=str, default="track")
     parser.add_argument('--tracks', type=int, nargs='+', default=[10])
-    parser.add_argument('--step', type=int, default=os.getenv("SEQ_WINDOW"))
-    parser.add_argument('--length', type=int, default=os.getenv("SEQ_LENGTH"))
+    parser.add_argument('--step', type=int, default=os.getenv("SEQ_WINDOW", 128))
+    parser.add_argument('--length', type=int, default=os.getenv("SEQ_LENGTH", 256000))
     parser.add_argument('bedfile')
     parser.add_argument('array')
 

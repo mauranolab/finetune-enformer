@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog="make-hotspot-block")
     parser.add_argument('hotspots', type=str, default="-")
-    parser.add_argument('--length', type=int, default=os.getenv("SEQ_LENGTH"))
+    parser.add_argument('--length', type=int, default=os.getenv("SEQ_LENGTH", 25600))
     parser.add_argument('--sample', type=int, default=2000)
     parser.add_argument('--seed', type=int, default=5)
     parser.add_argument('--mappable', type=str)

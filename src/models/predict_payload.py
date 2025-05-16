@@ -143,8 +143,8 @@ if __name__ == "__main__":
     parser.add_argument('model', type=str)
     parser.add_argument('payload', type=str)
     parser.add_argument('--context', type=str)
-    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH'))
-    parser.add_argument('--reference', type=str, default=os.getenv('MM10_FASTA'))
+    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH', 25600))
+    parser.add_argument('--reference', type=str)
     ## model parameters
     modeldef = parser.add_argument_group('model definition')
     modeldef.add_argument('--key-size', type=int, default=64)

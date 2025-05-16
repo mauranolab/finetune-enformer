@@ -64,7 +64,7 @@ if __name__ == "__main__":
     load_dotenv()
     parser = argparse.ArgumentParser(prog="dinuc-frequency")
     parser.add_argument('coordinates', type=str)
-    parser.add_argument('--reference', type=str, default=os.getenv('MM10_FASTA'))
+    parser.add_argument('--reference', type=str)
     ## model parameters
     parser.add_argument('--output', type=str, default="dinuc-freq.txt")
     

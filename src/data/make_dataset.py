@@ -139,14 +139,14 @@ class KwargsParser(argparse.Action):
 if __name__ == "__main__":
     load_dotenv()
 
-    default_length = int(os.getenv("SEQ_LENGTH")) + 1280
+    default_length = int(os.getenv("SEQ_LENGTH", 25600)) + 1280
 
     parser = argparse.ArgumentParser(prog="make-dataset")
     parser.add_argument('dataset', type=str)
     parser.add_argument('sequences', type=str)
     parser.add_argument('--annotation', type=str)
-    parser.add_argument('--reference', type=str, default=os.getenv("MM10_FASTA"))
-    parser.add_argument("--context", type=str, default=os.getenv("SOX2_CONTEXT"))
+    parser.add_argument('--reference', type=str)
+    parser.add_argument("--context", type=str)
     parser.add_argument('--length', type=int, default=default_length)
     parser.add_argument('--seed', type=int, default=5)
     ## output parameters

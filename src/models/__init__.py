@@ -115,7 +115,7 @@ def restore_model(model:str, key:int, value:int, num_heads:int) -> (Enformer, Se
     if model == "tensorhub":
         import tensorflow_hub as hub
 
-        model = hub.load(os.getenv("TENSORHUB")).model
+        model = hub.load(os.getenv("ENFORMERTENSORHUB")).model
         model = lambda x, is_training: model.predict_on_batch(x)
     elif model == "original":
         model = load_original()
@@ -152,7 +152,7 @@ def load_model(
     if model == "tensorhub":
         import tensorflow_hub as hub
 
-        model = hub.load(os.getenv("TENSORHUB")).model
+        model = hub.load(os.getenv("ENFORMERTENSORHUB")).model
         modeltrack = lambda x, is_training: model.predict_on_batch(x)[head]
     elif model == "original":
         model = load_original()
