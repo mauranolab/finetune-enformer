@@ -142,7 +142,8 @@ def load_model(
         if model == "tensorhub" or not os.path.exists(head):
             raise ValueError(f"Unrecognized head '{head}'")
         
-        head_layer = tf.keras.layers.Dense(12, activation="softplus")
+        headsize = os.getenv('HEADSIZE', 5) ## Enable custom sizes with minimal impact
+        head_layer = tf.keras.layers.Dense(headsize, activation="softplus")
         checkpoint = tf.train.Checkpoint(head = head_layer)
         chkmanager = tf.train.CheckpointManager(checkpoint, head, max_to_keep=5)
         if chkmanager.latest_checkpoint:
