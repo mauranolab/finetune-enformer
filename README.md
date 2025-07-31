@@ -1,4 +1,4 @@
-# Iterative improvement of deep learning mod-els using synthetic regulatory genomics
+# Iterative improvement of deep learning models using synthetic regulatory genomics
 
 Enformer model fine-tuning code to train on experimentally evaluated synthetic constructs delivered to a genomic locus.
 We developed a fine-tuning strategy to improve performance by incorporating synthetic regulatory genomics datasets.
