@@ -56,7 +56,7 @@ class CovReader(object):
         return(f"<CovReader {str(self._options)}>")
 
 
-def main(mappable:str, tracks:str, reference:str, length:int, width:int, step:int, cutoff:float, size:int, batches:int, seed:int, prefix:str) -> int:
+def main(mappable:str, tracks:str, reference:str, length:int, width:int = 128, step:int, cutoff:float, size:int, batches:int, seed:int, prefix:str) -> int:
     ## Check files exists
     if mappable != "-" and not os.path.exists(mappable):
         print(f"Unable to locate file at`{mappable}`", file=sys.stderr)
@@ -151,18 +151,39 @@ def main(mappable:str, tracks:str, reference:str, length:int, width:int, step:in
 if __name__ == "__main__":
     load_dotenv()
     
-    parser = argparse.ArgumentParser(prog="make-track-dataset")
-    parser.add_argument('mappable', type=str)
-    parser.add_argument('tracks', type=str)
-    parser.add_argument('--reference', type=str, default=os.getenv("MM10_FASTA"))
-    parser.add_argument('--length', type=int, default=int(os.getenv("SEQ_LENGTH")))
-    parser.add_argument('--width', type=int, default=int(os.getenv("SEQ_WINDOW")))
-    parser.add_argument('--step', type=int, default=1)
-    parser.add_argument('--size', type=int, default=10000)
-    parser.add_argument('--batches', type=int, default=5)
-    parser.add_argument('--cutoff', type=float)
-    parser.add_argument('--seed', type=int, default=5)
-    parser.add_argument('--prefix', type=str, default="track-dataset")
+    parser = argparse.ArgumentParser(
+        prog = "make-track-dataset",
+        help = (
+            "Builds a track training dataset for collection of bigwig {tracks}. " +
+            "It will generate examples by extracting random {length} bp regions " +
+            "contained in the targeted regions defined by {mappable}. "
+            "Examples corresponding sequences are extracted from the {reference} " +
+            "FASTA file. " +
+            "Regions with standard signal deviation below {cutoff} are excluded " +
+            "to avoid presenting uninformative sites."
+        )
+    )
+    parser.add_argument('mappable', type=str,
+        help = "BED file specifying targeted regions to be considered. Specifying `-` uses stdin instead.")
+    parser.add_argument('tracks', type=str,
+        help = "TSV file specifying targeted bigwig tracks to be trained.")
+    parser.add_argument('--reference', type=str,
+        help = "FASTA file from which examples sequences are extracted.")
+    parser.add_argument(
+        '--length', type=int, default=os.getenv("SEQ_LENGTH", 25600),
+        help = "Length in bp of examples sequences. It must be a multiple of {width}.")
+    parser.add_argument('--step', type=int, default=1,
+        help = "Step size when sampling fragments within the {mappable} regions.")
+    parser.add_argument('--size', type=int, default=10000,
+        help = "Number of examples to be collected per dataset batch.")
+    parser.add_argument('--batches', type=int, default=5,
+        help = "Number of dataset batches to be collected.")
+    parser.add_argument('--cutoff', type=float,
+        help = "Minimal signal standard deviation required to consider an example.")
+    parser.add_argument('--seed', type=int, default=5,
+        help = "Random number generator seed to ensure reproducibility.")
+    parser.add_argument('--prefix', type=str, default="track-dataset",
+        help = "Output path prefix.")
 
     args = parser.parse_args()
 

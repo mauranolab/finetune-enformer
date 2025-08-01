@@ -175,20 +175,41 @@ def main(
 if __name__ == "__main__":
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="predict")
-    parser.add_argument('model', type=str)
-    parser.add_argument('dataset', type=str)
-    parser.add_argument('--dataset-batches', type=int, default=1)
-    parser.add_argument('--seed', type=int, default=5)
-    parser.add_argument('--plot', action='store_true')
+    parser = argparse.ArgumentParser(
+        prog="train-track",
+        help = (
+            "Trains a new output head based on a training dataset, while " +
+            "preserving the original Enformer trunk weights. " +
+            "During training, a portion of the training dataset are reserved " +
+            "for validation and used only to measure each epoch performance. " +
+            "Training is performed in epochs, where batches of examples are " +
+            "presented in steps."
+        )
+    )
+    parser.add_argument('model', type=str,
+        help = "Path to model weights or either `original` or `tensorhub` which will load weights from ENFORMERBASELINE and ENFORMERTENSORHUB, respectively.")
+    parser.add_argument('dataset', type=str,
+        help = "Path prefix for a training dataset. It looks for {dataset}.*.h5 files.")
+    parser.add_argument('--dataset-batches', type=int, default=1,
+        help = "Number of training dataset batches to consider during training.")
+    parser.add_argument('--seed', type=int, default=5,
+        help = "Random number generator seed to ensure reproducibility.")
+    parser.add_argument('--plot', action='store_true',
+        help = "Flag to generate reporting plot [WIP].")
     ## model parameters
     traindef = parser.add_argument_group('training options')
-    traindef.add_argument('--learning-rate', type=float, default=1E-4)
-    traindef.add_argument('--epochs', type=int, default=10)
-    traindef.add_argument("--steps", type=int, default=100)
-    traindef.add_argument("--batch", type=int, default=4)
-    traindef.add_argument("--validation", type=float, default=0.2)
-    traindef.add_argument('--baseline', type=str)
+    traindef.add_argument('--learning-rate', type=float, default=1E-4,
+        help = "Training learning rate.")
+    traindef.add_argument('--epochs', type=int, default=10,
+        help = "Number of training epochs to conduct.")
+    traindef.add_argument("--steps", type=int, default=100,
+        help = "Number of training steps to be conducted per epoch.")
+    traindef.add_argument("--batch", type=int, default=4,
+        help = "Number of examples to evaluate simultaneously per training step.")
+    traindef.add_argument("--validation", type=float, default=0.2,
+        help = "Ratio of training datasets to be reserved for validation. Validation examples are only used to measure performance at the end of each epoch.")
+    traindef.add_argument('--baseline', type=str,
+        help = "Path to weights to use as baseline. Defaults to ENFORMERBASELINE if not set")
 
     args = parser.parse_args()
     print(args)

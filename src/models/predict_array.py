@@ -76,21 +76,42 @@ def main(
 if __name__ == "__main__":
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="predict-array")
-    parser.add_argument('model', type=str)
-    parser.add_argument('bedfile', type=str)
-    parser.add_argument('--reference', type=str)
-    parser.add_argument('--length', type=int, default=os.getenv('SEQ_LENGTH', 25600))
+    parser = argparse.ArgumentParser(
+        prog="predict-array",
+        description = (
+            "Generated the {model} predictions over targeted regions specified " +
+            "in the {bedfile} and saves them into a numpy array. " +
+            "Each region are resized to be a multiple of {length} and broken " +
+            "into non-overlapping fragments for prediction. " +
+            "Each fragment sequence are extracted from {reference} FASTA file " +
+            "and predictions are measured as the average of {strides}x 1-bp " +
+            "shifts centered at the fragment region."
+        )
+    )
+    parser.add_argument('model', type=str,
+        help = "Path to model weights or either `original` or `tensorhub` which will load weights from ENFORMERBASELINE and ENFORMERTENSORHUB, respectively.")
+    parser.add_argument('bedfile', type=str, help = "BED file specifying targeted regions.")
+    parser.add_argument('--reference', type=str,
+        help = "Path to reference FASTA file from which the targeted regions sequences are extracted.")
+    parser.add_argument(
+        '--length', type=int, default=os.getenv('SEQ_LENGTH', 25600),
+        help = "Output fragments length in bp.")
     ## model parameters
     modeldef = parser.add_argument_group('model definition')
-    modeldef.add_argument('--key-size', type=int, default=64)
-    modeldef.add_argument('--value-size', type=int, default=64)
-    modeldef.add_argument('--num-heads', type=int, default=1)
+    modeldef.add_argument('--key-size', type=int, default=64,
+        help='Finetuning attention layer key size')
+    modeldef.add_argument('--value-size', type=int, default=64,
+        help='Finetuning attention layer value size')
+    modeldef.add_argument('--num-heads', type=int, default=1,
+        help='Number of independent finetuning attention heads')
     ## output parameters
     outputdef = parser.add_argument_group('output definition')
-    outputdef.add_argument('--head', type=str, default='mouse')
-    outputdef.add_argument('--strides', type=int, default=10)
-    outputdef.add_argument('--output', type=str, default="array.npy")
+    outputdef.add_argument('--head', type=str, default='mouse',
+        help = "Enformer output head (either mouse or human) or path to a head weights.")
+    outputdef.add_argument('--strides', type=int, default=10,
+        help = "Number of 1bp shift to average the predicted signal. Note that it will compute all strides in a single batch.")
+    outputdef.add_argument('--output', type=str, default="array.npy",
+        help = "Path to save resulting prediction array.")
 
     args = parser.parse_args()
     print(args, file=sys.stderr)
