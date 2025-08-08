@@ -3,11 +3,30 @@
 We have included below a quick start guide broken down into the following sections:
 
 - [Installation](#installation)
-- [Training new tracks](#training-new-tracks)
-- [Fine-tuning model](#fine-tuning-model)
-- [Data availability](#data-availability)
-- [Credits](#credits)
-- [Citation](#citation)
+- [Training Enformer to output predictions for new tracks](#training-enformer-to-output-predictions-for-new-tracks)
+- [Fine-tuning Enformer on Synthetic Regulatory Genomics data](#fine-tuning-enformer-on-synthetic-regulatory-genomics-data)
+
+### Data availability
+
+Pre-trained weights for the fine-tuned models and a new output head for five mESC (mouse embryonic stem cells) CAGE tracks are available under our [Zenodo repository](https://doi.org/10.5281/zenodo.13363228).
+
+### Credits
+
+This project Enformer implementation is based on their code available
+[here](https://github.com/google-deepmind/deepmind-research/tree/master/enformer)
+with only a minor modification to remove input/output size constraints (see
+[enformer.py](src/models/enformer.py) at line 141).
+
+### Citation
+
+If you find this repository useful and use some of our code, please cite our
+[preprint](https://www.biorxiv.org/content/10.1101/2025.02.04.636130v2):
+
+> Ribeiro-dos-Santos, André M., and Matthew T. Maurano. Iterative Improvement
+> of Deep Learning Models Using Synthetic Regulatory Genomics.
+> bioRxiv, 21 Feb. 2025. bioRxiv, https://doi.org/10.1101/2025.02.04.636130.
+
+---
 
 ## Installation
 
@@ -60,7 +79,9 @@ SPEC_SH64128="--key-size 64 --value-size 128 --num-heads 1"
 SPEC_MH6464="--key-size 64  --value-size 64  --num-heads 4"
 ```
 
-## Training new tracks
+---
+
+## Training Enformer to output predictions for new tracks
 
 Given some bigwig files for some tracks we wish to make predictions, we can train an new output layer to generate similar predictions as Enformer without changing the model underlining weights.
 For such purpose, we must first specify the new output tracks on a TSV such as the one below.
@@ -192,7 +213,9 @@ python3 -m src.data.array_to_bedgraph \
     --prefix out/mESC-CAGE/targets
 ```
 
-## Fine-tuning model
+---
+
+## Fine-tuning Enformer on Synthetic Regulatory Genomics data
 
 Code to fine-tuning on experimentally evaluated synthetic constructs delivered to a genomic locus.
 We developed a fine-tuning strategy to improve performance by incorporating synthetic regulatory genomics datasets.
@@ -302,22 +325,3 @@ python3 -m src.models.predict \
     --output out/SingleHead64_64/Brosh2023.tsv
 ```
 
-## Data availability
-
-Pre-trained weights for the fine-tuned models and a new output head for five mESC (mouse embryonic stem cells) CAGE tracks are available under our Zenodo repository (here).
-
-## Credits
-
-This project Enformer implementation is based on their code available
-[here](https://github.com/google-deepmind/deepmind-research/tree/master/enformer)
-with only a minor modification to remove input/output size constraints (see
-[enformer.py](src/models/enformer.py) at line 141).
-
-## Citation
-
-If you find this repository useful and use some of our code, please cite our
-[preprint](https://www.biorxiv.org/content/10.1101/2025.02.04.636130v2):
-
-> Ribeiro-dos-Santos, André M., and Matthew T. Maurano. Iterative Improvement
-> of Deep Learning Models Using Synthetic Regulatory Genomics.
-> bioRxiv, 21 Feb. 2025. bioRxiv, https://doi.org/10.1101/2025.02.04.636130.
