@@ -1,16 +1,10 @@
 # Iterative improvement of deep learning models using synthetic regulatory genomics
 
-Code to train a new Enformer output head and fine-tuning on experimentally evaluated synthetic constructs delivered to a genomic locus.
-We developed a fine-tuning strategy to improve performance by incorporating synthetic regulatory genomics datasets.
-We added a new independent output layer that uses the baseline Enformer feature extraction trunk to predict our synthetic assays expression data.
-The new output layer is composed of a self-attention layer to capture relevant features independently of position and a dense layer to combine the resulting signal into a single prediction value.
-We evaluated three configurations of our new output self-attention layer: **SingleHead 64/64**, **SingleHead 64/128**, and **MultiHead 64/64**. **SingleHead 64/64** applies a single projection of 64 key and value matrices, **SingleHead 64/128** applies a single projection of 64 key and 128 value matrices, and **MultiHead 64/64** applies four independent projections of 64 key and value matrices.
-
 We have included below a quick start guide broken down into the following sections:
 
-- [Instalation](#installation)
+- [Installation](#installation)
 - [Training new tracks](#training-new-tracks)
-- [Fine-tuning model](#fine-tuning)
+- [Fine-tuning model](#fine-tuning-model)
 - [Data availability](#data-availability)
 - [Credits](#credits)
 - [Citation](#citation)
@@ -199,6 +193,12 @@ python3 -m src.data.array_to_bedgraph \
 ```
 
 ## Fine-tuning model
+
+Code to fine-tuning on experimentally evaluated synthetic constructs delivered to a genomic locus.
+We developed a fine-tuning strategy to improve performance by incorporating synthetic regulatory genomics datasets.
+We added a new independent output layer that uses the baseline Enformer feature extraction trunk to predict our synthetic assays expression data.
+The new output layer is composed of a self-attention layer to capture relevant features independently of position and a dense layer to combine the resulting signal into a single prediction value.
+We evaluated three configurations of our new output self-attention layer: **SingleHead 64/64**, **SingleHead 64/128**, and **MultiHead 64/64**. **SingleHead 64/64** applies a single projection of 64 key and value matrices, **SingleHead 64/128** applies a single projection of 64 key and 128 value matrices, and **MultiHead 64/64** applies four independent projections of 64 key and value matrices.
 
 ### Building a fine-tuning dataset
 
